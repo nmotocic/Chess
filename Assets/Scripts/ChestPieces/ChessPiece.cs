@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -47,5 +48,10 @@ public class ChessPiece : MonoBehaviour
         r.Add(new Vector2Int(4, 4));
 
         return r;
+    }
+
+    public virtual SpecialMove GetSpecialMove(ref ChessPiece[,] board, ref List<Vector2Int[]> moveList, ref List<Vector2Int> availableMoves)
+    {
+        return SpecialMove.None;
     }
 }
