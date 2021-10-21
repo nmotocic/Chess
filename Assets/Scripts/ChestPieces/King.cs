@@ -22,11 +22,11 @@ public class King : ChessPiece
             }
         }
         //Left
-        if(CurrentX + 1 >= 0){
+        if(CurrentX - 1 >= 0){
             if(board[CurrentX - 1, CurrentY] == null) r.Add(new Vector2Int(CurrentX - 1, CurrentY));
             else if (board[CurrentX - 1, CurrentY].Team != Team) r.Add(new Vector2Int(CurrentX - 1, CurrentY));
             //Top right
-            if(CurrentY - 1 < tileCount){
+            if(CurrentY + 1 < tileCount){
                 if(board[CurrentX - 1, CurrentY + 1] == null) r.Add(new Vector2Int(CurrentX - 1, CurrentY + 1));
             else if (board[CurrentX - 1, CurrentY + 1].Team != Team) r.Add(new Vector2Int(CurrentX - 1, CurrentY + 1));
             }

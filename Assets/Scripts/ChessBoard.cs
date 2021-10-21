@@ -347,7 +347,7 @@ public class ChessBoard : MonoBehaviour
         }
         
         if(_specialMove == SpecialMove.Castling){
-            var lastMove = _moveList[_moveList.Count - 1];
+            Vector2Int[] lastMove = _moveList[_moveList.Count - 1];
             //Left Rook
             if(lastMove[1].x == 2){
                 switch(lastMove[1].y){
@@ -383,6 +383,33 @@ public class ChessBoard : MonoBehaviour
             }
         }
 
+        if(_specialMove == SpecialMove.Promotion){
+            Vector2Int[] lastMove = _moveList[_moveList.Count - 1];
+            ChessPiece myPawn = _chessPieces[lastMove[1].x, lastMove[1].y];
+            
+            if(myPawn.Type == PieceType.Pawn){
+                if(myPawn.Team == 0 && lastMove[1].y == 7){
+                    ChessPiece newQueen = SpawnSinglePiece(PieceType.Queen, 0);
+                    newQueen.transform.position = _chessPieces[lastMove[1].x, lastMove[1].y].transform.position;
+
+                    Destroy(_chessPieces[lastMove[1].x, lastMove[1].y].gameObject);
+                    _chessPieces[lastMove[1].x, lastMove[1].y] = newQueen;
+
+                    PositionSinglePiece(lastMove[1].x, lastMove[1].y, true);
+                }
+
+                if(myPawn.Team == 1 && lastMove[1].y == 0){
+                    ChessPiece newQueen = SpawnSinglePiece(PieceType.Queen, 1);
+                    newQueen.transform.position = _chessPieces[lastMove[1].x, lastMove[1].y].transform.position;
+
+                    Destroy(_chessPieces[lastMove[1].x, lastMove[1].y].gameObject);
+                    _chessPieces[lastMove[1].x, lastMove[1].y] = newQueen;
+                    
+                    PositionSinglePiece(lastMove[1].x, lastMove[1].y, true);
+                }
+            }
+
+        }
     }
 
     //UI

@@ -67,6 +67,11 @@ public class Pawn : ChessPiece
             }
         }
 
+        //Promotion
+        if((Team == 0 && CurrentY == 6) || (Team == 1 && CurrentY == 1)){
+            return SpecialMove.Promotion;
+        } 
+        
         return SpecialMove.None;
     }
 }
