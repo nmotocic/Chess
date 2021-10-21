@@ -40,6 +40,7 @@ public class ChessBoard : MonoBehaviour
     [SerializeField] private GameObject[] _prefabs;
     [SerializeField] private Material[] _teamMaterials;
 
+    
     private void Awake() {
         _isWhiteTurn = true;
         GenerateGrid(_tileSize, TILE_COUNT);
@@ -285,6 +286,7 @@ public class ChessBoard : MonoBehaviour
                                      - _bounds 
                                      + new Vector3(_tileSize / 2, 0, _tileSize / 2)
                                      + (Vector3.back * _deathSpacing) * _eatenBlacks.Count);
+                
             }
         }
         _chessPieces[x,y] = chessPiece;
@@ -292,12 +294,22 @@ public class ChessBoard : MonoBehaviour
         PositionSinglePiece(x,y);
 
         _isWhiteTurn = !_isWhiteTurn;
-        _moveList.Add(new Vector2Int[] { previousPosition, new Vector2Int(x,y) } );
-
+        Vector2Int[] move = new Vector2Int[] { previousPosition, new Vector2Int(x,y) };
+        _moveList.Add(move);
+        
         ProcessSpecialMove();
+        if(_specialMove == SpecialMove.None) RecordMove(chessPiece, move);
+        
         if(CheckForCheckMate()) CheckMate(chessPiece.Team);
         return true;
     }
+
+    private void RecordMove(ChessPiece chessPiece, Vector2Int[] move)
+    {
+        //Simple move record
+        UIManager.Instance.RecordNewMove(chessPiece, move);
+    }
+
     private void CheckMate(int team)
     {
         DisplayVicotry(team);
@@ -341,8 +353,10 @@ public class ChessBoard : MonoBehaviour
 
                     }
                     _chessPieces[enemyPawn.CurrentX, enemyPawn.CurrentY] = null;
+                    UIManager.Instance.RecordSpecialMove(SpecialMove.EnPassant, newMove);
                 }
             }
+            
         }
         
         if(_specialMove == SpecialMove.Castling){
@@ -363,6 +377,7 @@ public class ChessBoard : MonoBehaviour
                         _chessPieces[0,7] = null;
                         break;
                 }
+                UIManager.Instance.RecordCastling(2);
                 //Right Rook
             } else if (lastMove[1].x == 6) {
                 switch(lastMove[1].y){
@@ -379,6 +394,7 @@ public class ChessBoard : MonoBehaviour
                         _chessPieces[7,7] = null;
                         break;
                 }
+                UIManager.Instance.RecordCastling(6);
             }
         }
 
@@ -406,6 +422,7 @@ public class ChessBoard : MonoBehaviour
 
                     PositionSinglePiece(lastMove[1].x, lastMove[1].y, true);
                 }
+                UIManager.Instance.RecordSpecialMove(SpecialMove.Promotion, lastMove);
             }
 
         }
