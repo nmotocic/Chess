@@ -126,6 +126,7 @@ public class ChessBoard : MonoBehaviour
 
     }
 
+    //Highlights
     private void HighlightTiles()
     {
         for(int i = 0; i < _availableMoves.Count; i++){
@@ -140,6 +141,7 @@ public class ChessBoard : MonoBehaviour
         _availableMoves.Clear();
     }
 
+    //Generate board
     private void GenerateGrid(float tileSize, int tileCount){
         _yOffset += transform.position.y;
         _bounds = new Vector3((tileCount / 2) * tileSize, 0 , (tileCount / 2) * tileSize) + _boardCenter;
@@ -343,6 +345,44 @@ public class ChessBoard : MonoBehaviour
                 }
             }
         }
+        
+        if(_specialMove == SpecialMove.Castling){
+            var lastMove = _moveList[_moveList.Count - 1];
+            //Left Rook
+            if(lastMove[1].x == 2){
+                switch(lastMove[1].y){
+                    case 0: //White
+                        ChessPiece wRook = _chessPieces[0,0];
+                        _chessPieces[3,0] = wRook;
+                        PositionSinglePiece(3,0);
+                        _chessPieces[0,0] = null;
+                        break;
+                    case 7: //Black
+                        ChessPiece bRook = _chessPieces[0,7];
+                        _chessPieces[3,7] = bRook;
+                        PositionSinglePiece(3,7);
+                        _chessPieces[0,7] = null;
+                        break;
+                }
+                //Right Rook
+            } else if (lastMove[1].x == 6) {
+                switch(lastMove[1].y){
+                    case 0: //White
+                        ChessPiece wRook = _chessPieces[7,0];
+                        _chessPieces[5,0] = wRook;
+                        PositionSinglePiece(5,0);
+                        _chessPieces[7,0] = null;
+                        break;
+                    case 7: //Black
+                        ChessPiece bRook = _chessPieces[7,7];
+                        _chessPieces[5,7] = bRook;
+                        PositionSinglePiece(5,7);
+                        _chessPieces[7,7] = null;
+                        break;
+                }
+            }
+        }
+
     }
 
     //UI

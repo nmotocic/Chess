@@ -49,4 +49,70 @@ public class King : ChessPiece
 
         return r;
     }
+
+    public override SpecialMove GetSpecialMove(ref ChessPiece[,] board, ref List<Vector2Int[]> moveList, ref List<Vector2Int> availableMoves)
+    {
+        SpecialMove r = SpecialMove.None;
+        int checkTeam = ((Team == 0) ? 0 : 7);
+
+        var kingMove = moveList.Find(m => m[0].x == 4 && m[0].y == checkTeam); //(4,0) / (4,7) check if King moved
+        var leftRook = moveList.Find(m => m[0].x == 0 && m[0].y == checkTeam); //(0,0) / (0,7) check if left Rook moved
+        var rightRook = moveList.Find(m => m[0].x == 7 && m[0].y == checkTeam); //(7,0) / (7,7) check if right Rook moved
+
+        if(kingMove == null && CurrentX == 4){
+            //White team
+            if(Team == 0) {
+                //Left rook
+                if(leftRook == null) {
+                    if(board[0,0].Type == PieceType.Rook)
+                        if(board[0,0].Team == 0){
+                            //Obstruction in between King and Rook
+                            if(board[3,0] == null && board[2,0] == null && board[1,0] == null ){
+                                availableMoves.Add(new Vector2Int(2,0));
+                                r = SpecialMove.Castling;
+                            }
+                        }
+                }
+
+                //Right rook
+                if(rightRook == null) {
+                    if(board[7,0].Type == PieceType.Rook)
+                        if(board[7,0].Team == 0){
+                            //Obstruction in between King and Rook
+                            if(board[5,0] == null && board[6,0] == null){
+                                availableMoves.Add(new Vector2Int(6,0));
+                                r = SpecialMove.Castling;
+                            }
+                        }
+                }
+            //Black team
+            } else {
+                //Left rook
+                if(leftRook == null) {
+                    if(board[0,7].Type == PieceType.Rook)
+                        if(board[0,7].Team == 1){
+                            //Obstruction in between King and Rook
+                            if(board[3,7] == null && board[2,7] == null && board[1,7] == null ){
+                                availableMoves.Add(new Vector2Int(2,7));
+                                r = SpecialMove.Castling;
+                            }
+                        }
+                }
+
+                //Right rook
+                if(rightRook == null) {
+                    if(board[7,7].Type == PieceType.Rook)
+                        if(board[7,7].Team == 1){
+                            //Obstruction in between King and Rook
+                            if(board[5,7] == null && board[6,7] == null){
+                                availableMoves.Add(new Vector2Int(6,7));
+                                r = SpecialMove.Castling;
+                            }
+                        }
+                }
+            }
+        }
+
+        return r;
+    }
 }
