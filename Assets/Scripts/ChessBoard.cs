@@ -25,6 +25,9 @@ public class ChessBoard : MonoBehaviour
     private SpecialMove _specialMove;
     private bool _isWhiteTurn;
 
+    //Saving logic
+    private List<SaveEntry> entries = new List<SaveEntry>();
+
     //Art
     [Header("Art")]
     [SerializeField] private Material _tileMaterial;
@@ -40,7 +43,19 @@ public class ChessBoard : MonoBehaviour
     [SerializeField] private GameObject[] _prefabs;
     [SerializeField] private Material[] _teamMaterials;
 
-    
+
+    private static ChessBoard _instance;
+    public static ChessBoard Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<ChessBoard>();
+            }
+            return _instance;
+        }
+    }
     private void Awake() {
         _isWhiteTurn = true;
         GenerateGrid(_tileSize, TILE_COUNT);
@@ -128,7 +143,6 @@ public class ChessBoard : MonoBehaviour
 
     }
 
- 
 
     //Highlights
     private void HighlightTiles()
@@ -306,8 +320,11 @@ public class ChessBoard : MonoBehaviour
 
     private void RecordMove(ChessPiece chessPiece, Vector2Int[] move)
     {
+        
         //Simple move record
         UIManager.Instance.RecordNewMove(chessPiece, move);
+        entries.Add(new SaveEntry(chessPiece.Type, move));
+        
     }
 
     private void CheckMate(int team)
@@ -571,6 +588,8 @@ public class ChessBoard : MonoBehaviour
         SpawnAllPieces();
         PositionPieces();
         _isWhiteTurn = true;
+
+        FileHandler.SaveToJSON<SaveEntry>(entries);
     }
     public void OnExitButton(){
 

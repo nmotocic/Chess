@@ -24,8 +24,8 @@ public class Bishop : ChessPiece
             }
         }
 
-        //Bottom tight
-        for(int x = CurrentX - 1, y = CurrentY - 1; x < tileCount && y >= 0; x++, y-- ){
+        //Bottom right
+        for(int x = CurrentX + 1, y = CurrentY - 1; x < tileCount && y >= 0; x++, y-- ){
             if(board[x,y] == null) r.Add(new Vector2Int(x,y));
             else {
                 if(board[x,y].Team != Team) r.Add(new Vector2Int(x,y));
