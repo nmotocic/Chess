@@ -3,10 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class UIManager : MonoBehaviour
 {
-    public Text moveRecord;
+    [SerializeField] private Text _moveRecord;
+    [SerializeField] private Image loadMenu;
+
+    [SerializeField] private Animator menuAnimator;
     private static UIManager _instance;
     public static UIManager Instance
     {
@@ -22,8 +26,9 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        GetSavedGames();
     }
+
 
     // Update is called once per frame
     void Update()
@@ -35,7 +40,7 @@ public class UIManager : MonoBehaviour
     {
         string pieceType = chessPiece.Type.ToString();
         //Because we are looking at the board as a 8x8 matrix, we need to convert column indexes to letters as it's chess standard
-        moveRecord.text += String.Format($"{pieceType}: {ProcessColumn(move[1][1])}{move[1][0]}{ProcessColumn(move[0][1])}{move[0][0]} \n");
+        _moveRecord.text += String.Format($"{pieceType}: {ProcessColumn(move[1][1])}{move[1][0]}{ProcessColumn(move[0][1])}{move[0][0]} \n");
         
     }
 
@@ -43,19 +48,19 @@ public class UIManager : MonoBehaviour
         string special = specialMove.ToString();
 
         if(specialMove == SpecialMove.EnPassant) {
-            moveRecord.text += String.Format($"{ProcessColumn(move[0][1])}{move[0][0]}x{ProcessColumn(move[1][1])}{move[1][0]} e.p.\n");
+            _moveRecord.text += String.Format($"{ProcessColumn(move[0][1])}{move[0][0]}x{ProcessColumn(move[1][1])}{move[1][0]} e.p.\n");
         } else if (specialMove == SpecialMove.Promotion){
-            moveRecord.text += String.Format($"{ProcessColumn(move[0][1])}{move[0][0]}x{ProcessColumn(move[1][1])}{move[1][0]}=Q \n");
+            _moveRecord.text += String.Format($"{ProcessColumn(move[0][1])}{move[0][0]}x{ProcessColumn(move[1][1])}{move[1][0]}=Q \n");
         }
     }
 
     public void RecordCastling(int side){
         if (side == 2) { 
             //queenside
-            moveRecord.text += String.Format($"O-O-O\n");
+            _moveRecord.text += String.Format($"O-O-O\n");
         } else if (side == 6) {
             //kingside
-            moveRecord.text += String.Format($"O-O\n");
+            _moveRecord.text += String.Format($"O-O\n");
         }
     }
 
@@ -80,5 +85,50 @@ public class UIManager : MonoBehaviour
         }
         return "A";
     }
+
+    
+    private void GetSavedGames()
+    {
+        //Fetch all of the saved games
+        string[] fileNames = Directory.GetFiles(Application.persistentDataPath);
+        
+        GameObject btnTemplate = loadMenu.transform.GetChild(0).gameObject;
+        GameObject btn;
+
+        for (int f = 0; f < fileNames.Length; f++){
+            string filename = Between(fileNames[f], "\\", ".");
+            Debug.Log(filename);
+            btn = Instantiate(btnTemplate, loadMenu.transform);
+            btn.transform.GetChild(0).GetComponent<Text>().text = filename;
+        }
+
+        Destroy(btnTemplate);
+    }
+    //Main Menu UI Bttns
+    public void OnPlayBtn(){
+        menuAnimator.SetTrigger("InGameMenu");
+    }
+    public void OnLoadBtn(){
+        //change to saves list screen
+        menuAnimator.SetTrigger("LoadScreen");
+    }
+
+    public void OnLoadBackBtn(){
+        //change to saves list screen
+        menuAnimator.SetTrigger("StartMenu");
+    }
+
+    public void OnExitBtn(){
+
+    }
+    private string Between(string STR , string FirstString, string LastString)
+    {       
+        string FinalString;     
+        int Pos1 = STR.IndexOf(FirstString) + FirstString.Length;
+        int Pos2 = STR.IndexOf(LastString);
+        FinalString = STR.Substring(Pos1, Pos2 - Pos1);
+        return FinalString;
+    }
+    
 
 }
