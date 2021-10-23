@@ -10,7 +10,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _moveRecord;
     [SerializeField] private Image loadMenu;
 
+    // Animation
     [SerializeField] private Animator menuAnimator;
+
     private static UIManager _instance;
     public static UIManager Instance
     {
@@ -104,6 +106,7 @@ public class UIManager : MonoBehaviour
 
         Destroy(btnTemplate);
     }
+
     //Main Menu UI Bttns
     public void OnPlayBtn(){
         menuAnimator.SetTrigger("InGameMenu");
@@ -115,12 +118,30 @@ public class UIManager : MonoBehaviour
 
     public void OnLoadBackBtn(){
         //change to saves list screen
-        menuAnimator.SetTrigger("StartMenu");
+        menuAnimator.SetTrigger("GameMenu");
     }
 
     public void OnExitBtn(){
-
+        
     }
+
+    public void LoadFile(){
+        List<SaveEntry> entries = new List<SaveEntry>();
+
+        GameObject btn = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        if(btn != null){
+
+            string filename = btn.transform.GetChild(0).GetComponent<Text>().text;
+            filename += ".json";
+            string path = Application.persistentDataPath + "/" + filename;
+            entries = FileHandler.ReadFromJSON<SaveEntry>(filename);
+            
+            CommandParser cp = new CommandParser(entries);
+            cp.Parse();
+        }
+       
+    }
+    //Helper class
     private string Between(string STR , string FirstString, string LastString)
     {       
         string FinalString;     

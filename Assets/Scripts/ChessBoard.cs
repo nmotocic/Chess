@@ -318,14 +318,6 @@ public class ChessBoard : MonoBehaviour
         return true;
     }
 
-    private void RecordMove(ChessPiece chessPiece, Vector2Int[] move)
-    {
-        
-        //Simple move record
-        UIManager.Instance.RecordNewMove(chessPiece, move);
-        entries.Add(new SaveEntry(chessPiece.Type, move));
-        
-    }
 
     private void CheckMate(int team)
     {
@@ -559,7 +551,15 @@ public class ChessBoard : MonoBehaviour
         }
         return false;
     }
-    //UI
+    //UI 
+    private void RecordMove(ChessPiece chessPiece, Vector2Int[] move)
+    {
+        
+        //Simple move record
+        UIManager.Instance.RecordNewMove(chessPiece, move);
+        entries.Add(new SaveEntry(chessPiece.Type, move));
+        
+    }
     private void DisplayVicotry(int winningTeam){
         _victoryScreen.SetActive(true);
         _victoryScreen.transform.GetChild(winningTeam).gameObject.SetActive(true);
