@@ -2,23 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CommandParser
+public class CommandParser : MonoBehaviour
 {
-   public List<ICommand> commands = new List<ICommand>();
+   public List<MoveCommand> commands = new List<MoveCommand>();
    private List<SaveEntry> entries = new List<SaveEntry>();
-   
-   public CommandParser(List<SaveEntry> entries){
-       this.entries = entries;
+   private ExecuteCommand  _executeCommand;
+
+    public List<SaveEntry> Entries { get => entries; set => entries = value; }
+
+    void Awake(){
+       _executeCommand = GetComponent<ExecuteCommand>();
    }
+   
    public void Parse(){
        
         //DEBUG
-        foreach (SaveEntry entry in entries) Debug.Log(entry);
+        foreach (SaveEntry entry in Entries) Debug.Log(entry);
 
         //parse into commands
-        foreach (SaveEntry entry in entries){
-            //commands.Add(new MoveCommand(entry.chessPiece, entry.move) as MoveCommand);
+        foreach (SaveEntry entry in Entries){
+            commands.Add(new MoveCommand(entry.chessPiece, entry.move));
         }
+        _executeCommand.SetCommandList(commands);
 
    } 
 }

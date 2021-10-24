@@ -271,7 +271,7 @@ public class ChessBoard : MonoBehaviour
         return -Vector2Int.one; //Invalid
     }
    //Moving
-    private bool MoveTo(ChessPiece chessPiece, int x, int y)
+    public bool MoveTo(ChessPiece chessPiece, int x, int y)
     {
         if(!ContainsValidMove(ref _availableMoves, new Vector2Int(x,y))) return false;
 
@@ -557,7 +557,7 @@ public class ChessBoard : MonoBehaviour
         
         //Simple move record
         UIManager.Instance.RecordNewMove(chessPiece, move);
-        entries.Add(new SaveEntry(chessPiece.Type, move));
+        entries.Add(new SaveEntry(chessPiece, move));
         
     }
     private void DisplayVicotry(int winningTeam){

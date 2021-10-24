@@ -32,7 +32,7 @@ public class CommandHandler
 
         if(_index < _commandList.Count){
             _index++;
-            _commandList[_index - 1].Execute();
+            //_commandList[_index - 1].Execute();
         }
     }
 }

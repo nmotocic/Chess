@@ -10,6 +10,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _moveRecord;
     [SerializeField] private Image loadMenu;
 
+    [SerializeField] private GameObject _commandManager;
+
     // Animation
     [SerializeField] private Animator menuAnimator;
 
@@ -136,7 +138,8 @@ public class UIManager : MonoBehaviour
             string path = Application.persistentDataPath + "/" + filename;
             entries = FileHandler.ReadFromJSON<SaveEntry>(filename);
             
-            CommandParser cp = new CommandParser(entries);
+            CommandParser cp = _commandManager.gameObject.GetComponent<CommandParser>();
+            cp.Entries = entries;
             cp.Parse();
         }
        

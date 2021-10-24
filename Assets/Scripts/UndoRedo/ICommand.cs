@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface ICommand 
 {
-   void Execute();
+   void Execute(ChessBoard chessBoard);
 
    void Undo();
 }

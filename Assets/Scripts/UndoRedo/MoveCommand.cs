@@ -6,16 +6,16 @@ using System;
 [Serializable]
 public class MoveCommand : ICommand
 {
-    private PieceType _pieceToMove;
+    private ChessPiece _pieceToMove;
     private Vector2Int[] _moveToMake; //from -> to
 
-    public MoveCommand(PieceType piece, Vector2Int[] move){
+    public MoveCommand(ChessPiece piece, Vector2Int[] move){
         _pieceToMove = piece;
         _moveToMake = move;
     }
-    public void Execute()
+    public void Execute(ChessBoard chessBoard)
     {
-        throw new NotImplementedException();
+        chessBoard.MoveTo( _pieceToMove , _moveToMake[1].x, _moveToMake[1].y);
     }
 
     public void Undo()

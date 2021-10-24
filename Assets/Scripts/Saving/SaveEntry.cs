@@ -6,11 +6,11 @@ using System;
 [Serializable]
 public class SaveEntry
 {
-    public string chessPiece;
+    public ChessPiece chessPiece;
     public Vector2Int[] move;
 
-    public SaveEntry(PieceType chessPiece, Vector2Int[] move){
-        this.chessPiece = chessPiece.ToString();
+    public SaveEntry(ChessPiece chessPiece, Vector2Int[] move){
+        this.chessPiece = chessPiece;
         this.move = move;
     }   
 }
