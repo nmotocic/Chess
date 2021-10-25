@@ -18,8 +18,8 @@ public class CommandParser : MonoBehaviour
        
         //parse into commands
         foreach (SaveEntry entry in Entries){
-            commands.Add(new MoveCommand(entry.chessPiece, entry.move));
-            ExecuteCommand._instance.AddCommand(new MoveCommand(entry.chessPiece, entry.move));
+            commands.Add(new MoveCommand(entry.move));
+            ExecuteCommand._instance.AddCommand(new MoveCommand(entry.move));
         }
         
 

@@ -6,11 +6,9 @@ using System;
 [Serializable]
 public class MoveCommand : ICommand
 {
-    private ChessPiece _pieceToMove;
     private Vector2Int[] _moveToMake; //from -> to
 
-    public MoveCommand(ChessPiece piece, Vector2Int[] move){
-        _pieceToMove = piece;
+    public MoveCommand(Vector2Int[] move){
         _moveToMake = move;
     }
     public void Execute()
