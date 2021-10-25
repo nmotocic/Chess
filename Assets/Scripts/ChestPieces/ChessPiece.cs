@@ -22,7 +22,7 @@ public class ChessPiece : MonoBehaviour
     private Vector3 _desiredScale = Vector3.one;
 
     private void Start(){
-        transform.rotation = Quaternion.Euler((Team == 0) ? Vector3.zero : new Vector3(0,180,0));
+        transform.rotation = Quaternion.Euler((Team == 0) ? new Vector3(0, 180 ,0) : Vector3.zero);
     }
     
     private void Update(){

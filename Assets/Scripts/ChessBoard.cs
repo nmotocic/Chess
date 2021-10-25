@@ -56,14 +56,18 @@ public class ChessBoard : MonoBehaviour
             return _instance;
         }
     }
-    private void Awake() {
+
+    void Awake() {
+        _instance = this;
+    }
+
+    void Start() {
         _isWhiteTurn = true;
         GenerateGrid(_tileSize, TILE_COUNT);
         SpawnAllPieces();
         PositionPieces();
     }
-
-    private void Update() {
+    void Update() {
         if(!_currentCamera){
             _currentCamera = Camera.main;
             return;
@@ -239,6 +243,7 @@ public class ChessBoard : MonoBehaviour
         piece.Team = team;
 
         piece.GetComponent<MeshRenderer>().material = _teamMaterials[team];
+        
 
         return piece;
     }
@@ -270,10 +275,14 @@ public class ChessBoard : MonoBehaviour
         }
         return -Vector2Int.one; //Invalid
     }
+
    //Moving
-    public bool MoveTo(ChessPiece chessPiece, int x, int y)
+    private bool MoveTo(ChessPiece chessPiece, int x, int y)
     {
-        if(!ContainsValidMove(ref _availableMoves, new Vector2Int(x,y))) return false;
+        if(!ContainsValidMove(ref _availableMoves, new Vector2Int(x,y))){
+            Debug.Log("Here...");
+            return false;
+        } 
 
         Vector2Int previousPosition = new Vector2Int(chessPiece.CurrentX, chessPiece.CurrentY);
         
@@ -318,7 +327,22 @@ public class ChessBoard : MonoBehaviour
         return true;
     }
 
+    //Move command
+    public void Move(int FromX, int FromY, int ToX, int ToY){
+        ChessPiece pieceToMove = _chessPieces[FromX, FromY];
+        _availableMoves = pieceToMove.GetAvailableMove(ref _chessPieces, TILE_COUNT);
+        
+        Vector2Int previousPosition = new Vector2Int(pieceToMove.CurrentX, pieceToMove.CurrentY);
 
+        Vector2Int hitPosition = LookUpTileIndex(_tiles[ToX, ToY]);
+
+        bool validMove = MoveTo(pieceToMove, hitPosition.x, hitPosition.y);
+        Debug.Log(validMove);
+        if(!validMove){
+            pieceToMove.SetPosition(GetTileCenter(previousPosition.x, previousPosition.y));
+        }
+        //pieceToMove = null;
+    }
     private void CheckMate(int team)
     {
         DisplayVicotry(team);

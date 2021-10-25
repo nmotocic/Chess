@@ -128,6 +128,8 @@ public class UIManager : MonoBehaviour
     }
 
     public void LoadFile(){
+        menuAnimator.SetTrigger("InGameMenu");
+        
         List<SaveEntry> entries = new List<SaveEntry>();
 
         GameObject btn = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;

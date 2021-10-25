@@ -13,9 +13,9 @@ public class MoveCommand : ICommand
         _pieceToMove = piece;
         _moveToMake = move;
     }
-    public void Execute(ChessBoard chessBoard)
+    public void Execute()
     {
-        chessBoard.MoveTo( _pieceToMove , _moveToMake[1].x, _moveToMake[1].y);
+        ChessBoard.Instance.Move( _moveToMake[0].x, _moveToMake[0].y , _moveToMake[1].x, _moveToMake[1].y);
     }
 
     public void Undo()
