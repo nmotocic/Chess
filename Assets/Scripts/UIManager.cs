@@ -7,12 +7,19 @@ using System.IO;
 
 public class UIManager : MonoBehaviour
 {
+    [Header("HUD")]
+    [SerializeField] private GameObject _hud;
     [SerializeField] private Text _moveRecord;
+    
+    [Header("Load")]
     [SerializeField] private Image loadMenu;
 
+    [SerializeField] private GameObject _loadMenuBtn;
+
+    [Header("Command")]
     [SerializeField] private GameObject _commandManager;
 
-    // Animation
+    [Header("Animation")]
     [SerializeField] private Animator menuAnimator;
 
     private static UIManager _instance;
@@ -27,6 +34,9 @@ public class UIManager : MonoBehaviour
             return _instance;
         }
     }
+
+    public Animator MenuAnimator { get => menuAnimator; set => menuAnimator = value; }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,12 +44,48 @@ public class UIManager : MonoBehaviour
     }
 
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    //Main Menu UI Bttns
+    public void OnPlayBtn(){
+        MenuAnimator.SetTrigger("InGameMenu");
+        ChessBoard.Instance.enableDragging = true;
+        _hud.SetActive(true);
+    }
+    public void OnLoadBtn(){
+        //change to saves list screen
+        MenuAnimator.SetTrigger("LoadScreen");
     }
 
+    public void OnLoadBackBtn(){
+        //change to saves list screen
+        MenuAnimator.SetTrigger("GameMenu");
+    }
+
+    public void OnExitBtn(){
+         Application.Quit();
+    }
+
+    public void LoadFile(){
+        List<SaveEntry> entries = new List<SaveEntry>();
+
+        GameObject btn = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+        if(btn != null){
+
+            string filename = btn.transform.GetChild(0).GetComponent<Text>().text;
+            filename += ".json";
+            string path = Application.persistentDataPath + "/" + filename;
+            entries = FileHandler.ReadFromJSON<SaveEntry>(filename);
+            
+            CommandParser cp = _commandManager.gameObject.GetComponent<CommandParser>();
+            cp.Entries = entries;
+            cp.Parse();
+        }
+
+       loadMenu.gameObject.SetActive(false);
+       _loadMenuBtn.SetActive(false);
+       ChessBoard.Instance.enableDragging = false;
+    }
+ 
+    //Helper class
     public void RecordNewMove(ChessPiece chessPiece, Vector2Int[] move)
     {
         string pieceType = chessPiece.Type.ToString();
@@ -101,7 +147,7 @@ public class UIManager : MonoBehaviour
 
         for (int f = 0; f < fileNames.Length; f++){
             string filename = Between(fileNames[f], "\\", ".");
-            Debug.Log(filename);
+            
             btn = Instantiate(btnTemplate, loadMenu.transform);
             btn.transform.GetChild(0).GetComponent<Text>().text = filename;
         }
@@ -109,44 +155,6 @@ public class UIManager : MonoBehaviour
         Destroy(btnTemplate);
     }
 
-    //Main Menu UI Bttns
-    public void OnPlayBtn(){
-        menuAnimator.SetTrigger("InGameMenu");
-    }
-    public void OnLoadBtn(){
-        //change to saves list screen
-        menuAnimator.SetTrigger("LoadScreen");
-    }
-
-    public void OnLoadBackBtn(){
-        //change to saves list screen
-        menuAnimator.SetTrigger("GameMenu");
-    }
-
-    public void OnExitBtn(){
-        
-    }
-
-    public void LoadFile(){
-        menuAnimator.SetTrigger("InGameMenu");
-        
-        List<SaveEntry> entries = new List<SaveEntry>();
-
-        GameObject btn = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
-        if(btn != null){
-
-            string filename = btn.transform.GetChild(0).GetComponent<Text>().text;
-            filename += ".json";
-            string path = Application.persistentDataPath + "/" + filename;
-            entries = FileHandler.ReadFromJSON<SaveEntry>(filename);
-            
-            CommandParser cp = _commandManager.gameObject.GetComponent<CommandParser>();
-            cp.Entries = entries;
-            cp.Parse();
-        }
-       
-    }
-    //Helper class
     private string Between(string STR , string FirstString, string LastString)
     {       
         string FinalString;     
