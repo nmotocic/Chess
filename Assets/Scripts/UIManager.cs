@@ -136,7 +136,6 @@ public class UIManager : MonoBehaviour
         return "A";
     }
 
-    
     private void GetSavedGames()
     {
         //Fetch all of the saved games
@@ -147,7 +146,7 @@ public class UIManager : MonoBehaviour
 
         for (int f = 0; f < fileNames.Length; f++){
             string filename = Between(fileNames[f], "\\", ".");
-            
+
             btn = Instantiate(btnTemplate, loadMenu.transform);
             btn.transform.GetChild(0).GetComponent<Text>().text = filename;
         }
