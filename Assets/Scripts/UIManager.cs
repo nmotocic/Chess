@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     [Header("HUD")]
     [SerializeField] private GameObject _hud;
     [SerializeField] private Text _moveRecord;
+    [SerializeField] private GameObject _replayHud;
     
     [Header("Load")]
     [SerializeField] private Image loadMenu;
@@ -36,6 +37,8 @@ public class UIManager : MonoBehaviour
     }
 
     public Animator MenuAnimator { get => menuAnimator; set => menuAnimator = value; }
+    public GameObject Hud { get => _hud; set => _hud = value; }
+    public GameObject ReplayHud { get => _replayHud; set => _replayHud = value; }
 
     // Start is called before the first frame update
     void Start()
@@ -48,7 +51,7 @@ public class UIManager : MonoBehaviour
     public void OnPlayBtn(){
         MenuAnimator.SetTrigger("InGameMenu");
         ChessBoard.Instance.enableDragging = true;
-        _hud.SetActive(true);
+        Hud.SetActive(true);
     }
     public void OnLoadBtn(){
         //change to saves list screen
@@ -82,6 +85,7 @@ public class UIManager : MonoBehaviour
 
        loadMenu.gameObject.SetActive(false);
        _loadMenuBtn.SetActive(false);
+       ReplayHud.gameObject.SetActive(true);
        ChessBoard.Instance.enableDragging = false;
     }
  

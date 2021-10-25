@@ -12,7 +12,7 @@ public struct State
     public void ExecuteNextCommand()
     {
         if (index >= commands.Count) return;
-        Debug.Log("Executing... "+ commands[index].GetType().Name);
+        //Debug.Log("Executing... "+ commands[index].GetType().Name);
         commands[index].Execute();
         index++;
     }

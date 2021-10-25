@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class ExecuteCommand : MonoBehaviour
 {
+    [Header("Hud")]
+    [SerializeField] private GameObject _playButton;
+    [SerializeField] private GameObject _forwardButton;
+    [SerializeField] private GameObject _backwardsButton;
     private int _index;
-
     public State state;
-
     public int CommandCount => state.commands.Count;
     //Singleton
     internal static ExecuteCommand _instance;
@@ -24,19 +26,25 @@ public class ExecuteCommand : MonoBehaviour
             commands = new List<ICommand>()
         };
     }
-    
-    void FixedUpdate(){           
-        if(Input.GetKey(KeyCode.RightArrow)){
-            Debug.Log("Execute commands...");
-            //execute command at current index
-            state.ExecuteNextCommand();
-              
-        }
-    }
+
 
     public void AddCommand(ICommand command){
         state.commands.Add(command);
     }
 
-   
+   //Replay screen
+    public void OnPlayBtn(){
+        //Execute next command
+        state.ExecuteNextCommand();
+    }
+    public void OnForwardBtn(){
+        //Redo
+        state.RedoCommand();
+    }
+
+    public void OnBackwardsBtn(){
+        //Undo
+        state.UndoCommand();
+    }
+
 }

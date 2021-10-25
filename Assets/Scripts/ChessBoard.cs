@@ -335,6 +335,7 @@ public class ChessBoard : MonoBehaviour
 
     //Move command
     public void Move(int FromX, int FromY, int ToX, int ToY){
+        //from->to
         ChessPiece pieceToMove = _chessPieces[FromX, FromY];
         _availableMoves = pieceToMove.GetAvailableMove(ref _chessPieces, TILE_COUNT);
         
@@ -343,12 +344,12 @@ public class ChessBoard : MonoBehaviour
         Vector2Int hitPosition = LookUpTileIndex(_tiles[ToX, ToY]);
 
         bool validMove = MoveTo(pieceToMove, hitPosition.x, hitPosition.y);
-        Debug.Log(validMove);
+        
         if(!validMove){
             pieceToMove.SetPosition(GetTileCenter(previousPosition.x, previousPosition.y));
         }
-        //pieceToMove = null;
     }
+
     private void CheckMate(int team)
     {
         if(enableDragging){
@@ -598,17 +599,35 @@ public class ChessBoard : MonoBehaviour
     private void DisplayVictory(int winningTeam){
         _victoryScreen.SetActive(true);
         _victoryScreen.transform.GetChild(winningTeam).gameObject.SetActive(true);
+        UIManager.Instance.Hud.SetActive(false);
     }
 
     private void DisplayResult(int winningTeam){
         _resultScreen.SetActive(true);
         _resultScreen.transform.GetChild(winningTeam).gameObject.SetActive(true);
+        UIManager.Instance.ReplayHud.SetActive(false);
     }
     public void OnResetButton(){
         _victoryScreen.transform.GetChild(0).gameObject.SetActive(false);
         _victoryScreen.transform.GetChild(0).gameObject.SetActive(false);
         _victoryScreen.SetActive(true);
 
+        ResetBoard();
+
+        FileHandler.SaveToJSON<SaveEntry>(entries);
+    }
+    public void OnBackButton(){
+        if(enableDragging){
+             _victoryScreen.SetActive(false);
+             
+        } else {
+            _resultScreen.SetActive(false);
+            ResetBoard();
+        }
+        UIManager.Instance.MenuAnimator.SetTrigger("GameMenu");
+    }
+
+    private void ResetBoard(){
         _currentlyDragging = null;
         _availableMoves .Clear();
         _moveList.Clear();
@@ -629,15 +648,6 @@ public class ChessBoard : MonoBehaviour
         PositionPieces();
         _isWhiteTurn = true;
 
-        FileHandler.SaveToJSON<SaveEntry>(entries);
-    }
-    public void OnBackButton(){
-        if(enableDragging){
-             _victoryScreen.SetActive(false);
-        } else {
-            _resultScreen.SetActive(false);
-        }
-        UIManager.Instance.MenuAnimator.SetTrigger("GameMenu");
     }
 
 }
